@@ -1,5 +1,8 @@
-module.exports = (fn) => {
-  return (req, res, next) => {
-    fn(req, res, next).catch(next);
+const catchAsync = (fn) =>
+  function asyncUtilWrap(...args) {
+    const fnReturn = fn(...args);
+    const next = args[args.length - 1];
+    return Promise.resolve(fnReturn).catch(next);
   };
-};
+
+module.exports = catchAsync;
