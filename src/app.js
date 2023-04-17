@@ -6,8 +6,10 @@ const { mongoConnection } = require("./config/db");
 const authRouter = require("./routes/auth.router");
 const resident_typeRouter = require("./routes/resident_type.router");
 const property_typeRouter = require("./routes/property_type.router");
+const propertyRouter = require("./routes/properties.router");
 const AppError = require("./utils/appError");
 const errorHandler = require("./middleware/globalErrorHandler.middleware");
+const protection = require("./middleware/protect.middleware");
 
 const connect = async () => {
   try {
@@ -27,8 +29,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 connect();
 app.use(authRouter);
+app.use(protection);
 app.use(resident_typeRouter);
 app.use(property_typeRouter);
+app.use(propertyRouter);
 
 app.all("*", (req, res, next) => {
   next(

@@ -80,7 +80,7 @@ const createUser = catchAsync(async (body) => {
 
 const signin = catchAsync(async (body) => {
   //Destructuring body
-  const { email, password } = body;
+  const { email, password } = body.body;
 
   //check if email and password is not exist
   if (!email || !password) {

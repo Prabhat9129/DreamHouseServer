@@ -11,7 +11,7 @@ const propertySchma = new mongoose.Schema({
     require: [true, "Please provide property Type id!"],
   },
   //   city_id: {},
-  resident_type: {
+  resident_type_id: {
     type: mongoose.Types.ObjectId,
     require: [true, "Please provide resident Type ID!"],
   },
@@ -23,7 +23,7 @@ const propertySchma = new mongoose.Schema({
   status: { type: String },
   //   Area: {},
   profile: { type: String },
-  allowance: { type: String },
+  allowance: { type: Boolean },
 });
 
 const property = mongoose.model("Property", propertySchma);
