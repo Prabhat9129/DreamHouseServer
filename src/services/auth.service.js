@@ -129,7 +129,25 @@ const signin = catchAsync(async (body) => {
 });
 
 const changePassword = catchAsync(
-  async (currPass, newPass, passConformation, userId) => {}
+  async (currPass, newPass, passConformation, userId) => {
+    const user = await userModel.findOne({ _id: userId });
+
+    if (!user) {
+      return {
+        status: "fails",
+        message: "user not find",
+        statusCode: 404,
+      };
+    }
+
+    // const isMatch=await
+
+    return {
+      status: "fails",
+      message: "user not find",
+      statusCode: 404,
+    };
+  }
 );
 
-module.exports = { createUser, signin };
+module.exports = { createUser, signin, changePassword };

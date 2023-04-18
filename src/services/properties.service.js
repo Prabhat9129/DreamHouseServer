@@ -1,6 +1,5 @@
 const catchAsync = require("../utils/asyncFunction");
 const propertiesModel = require("../Models/property.model");
-const userModel = require("../Models/user.model");
 const properties_typeModel = require("../Models/property_type.model");
 const resident_typeModel = require("../Models/resident_type.model");
 
@@ -24,18 +23,8 @@ const addProperty = catchAsync(async (body) => {
       statusCode: 400,
     };
   }
-
-  // verfiy user in collection
-  const Isuser = await userModel.findOne({ name: userName });
-  if (!Isuser) {
-    return {
-      status: "Error",
-      message: "user name is invaild!",
-      statusCode: 400,
-    };
-  }
-
   // properties_type;
+
   const Isproperties_typename = await properties_typeModel.findOne({
     name: properties_typeName,
   });
@@ -61,17 +50,26 @@ const addProperty = catchAsync(async (body) => {
   }
 
   //Insert Into collection
-
-  const data = await propertiesModel.insertMany({
-    user_id: Isuser._id,
-    properties_type_id: Isproperties_typename._id,
-    resident_type_id: Isresident_typeName._id,
-    price: price,
-    size: size,
-    // status: status,
-    // profile: profile,
-    // allowance: true,
-  });
+  let data = {};
+  if (body.user.role === "seller") {
+    data = await propertiesModel.insertMany({
+      user_id: body.user._id,
+      properties_type_id: Isproperties_typename._id,
+      resident_type_id: Isresident_typeName._id,
+      price: price,
+      size: size,
+      // status: status,
+      // profile: profile,
+      // allowance: true,
+    });
+  } else {
+    return {
+      status: "fail",
+      message: "your role is not authorized for this task!",
+      statusCode: 401,
+      data: data,
+    };
+  }
 
   // return data
   return {

@@ -30,7 +30,27 @@ const Signedin = catchAsync(async (req, res) => {
 
 const changePassword = catchAsync(async (req, res) => {
   const { currPass, newPass, passConformation } = req.body;
+  if (!currPass || !newPass || !passConformation) {
+    return {
+      status: "Error",
+      message: "fields are Required",
+      statusCode: 400,
+    };
+  }
   const { status, message, statusCode, data, token } =
-    await userService.changePassword(currPass, newPass, passConformation);
+    await userService.changePassword(
+      currPass,
+      newPass,
+      passConformation,
+      req.user._id
+    );
+
+  return res.status(statusCode).json({
+    status,
+    message: message,
+    statusCode,
+    data,
+    token,
+  });
 });
-module.exports = { createdUser, Signedin };
+module.exports = { createdUser, Signedin, changePassword };

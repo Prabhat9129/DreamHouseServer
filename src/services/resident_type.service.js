@@ -24,10 +24,18 @@ const addResident_type = asyncFunction(async (body) => {
       statusCode: 409,
     };
   }
-
-  const data = await resident_typeModel.insertMany({
-    name,
-  });
+  let data = {};
+  if (body.user.role === "admin") {
+    data = await resident_typeModel.insertMany({
+      name,
+    });
+  } else {
+    return {
+      status: "fail",
+      message: "your role is not authorized for this task",
+      statusCode: 401,
+    };
+  }
 
   return {
     status: "sucess",
@@ -35,8 +43,6 @@ const addResident_type = asyncFunction(async (body) => {
     statusCode: 201,
     data,
   };
-
-  // const name=body
 });
 
 module.exports = { addResident_type };
