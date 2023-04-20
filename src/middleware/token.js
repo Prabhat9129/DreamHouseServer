@@ -8,32 +8,26 @@ const signToken = (id) => {
   });
 };
 
-const createSendToken = (
-  user,
-  utoken,
-  status,
-  statusCode,
-  message,
-  req,
-  res
-) => {
-  const token = utoken;
-
-  res.cookie("jwt", token, {
+const createSendToken = (user, utoken, status, statusCode, message, res) => {
+  // const token = utoken;
+  console.log(process.env.JWT_COOKIE_EXPIRES_IN);
+  const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
-    secure: req.secure || req.headers["x-forwarded-proto"] === "https",
-  });
+  };
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+
+  res.cookie("jwt", utoken, cookieOptions);
 
   // Remove password from output
-  user.password = undefined;
+  // user.password = undefined;
 
   res.status(statusCode).json({
     status,
     message,
-    token,
+    utoken,
     data: {
       user,
     },

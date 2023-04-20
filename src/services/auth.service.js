@@ -117,7 +117,7 @@ const signin = catchAsync(async (body) => {
 
   // Generate token
   const token = signToken(userData._id);
-
+  console.log(token);
   //send response
   return {
     status: "Success",
@@ -140,12 +140,35 @@ const changePassword = catchAsync(
       };
     }
 
-    // const isMatch=await
+    // compare password
+    const comp = await bcrypt.compareSync(currPass, user.password);
+    if (!comp) {
+      return {
+        status: "fails",
+        message: "Please provide correct current password!",
+        statusCode: 400,
+      };
+    }
+
+    // check new password and conform password are same or not
+    if (newPass !== passConformation) {
+      return {
+        status: "fails",
+        message: "password and conform password must be same! ",
+        statusCode: 400,
+      };
+    }
+
+    // update password in document
+    const salt = await bcrypt.genSalt();
+    newPassword = bcrypt.hashSync(newPass, salt);
+    user.password = newPassword;
+    await user.save();
 
     return {
-      status: "fails",
-      message: "user not find",
-      statusCode: 404,
+      status: "success",
+      message: "Password updated successfully!",
+      statusCode: 200,
     };
   }
 );

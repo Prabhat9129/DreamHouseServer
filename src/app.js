@@ -1,5 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const ratelimit = require("express-rate-limit");
 const cors = require("cors");
 const app = express();
 const { mongoConnection } = require("./config/db");
@@ -25,9 +27,18 @@ app.use(
   })
 );
 
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+
 connect();
+
+const limiter = ratelimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many request from this IP, please try in an Hour",
+});
+app.use("/api", limiter);
 app.use(authRouter);
 app.use(protect);
 app.use(resident_typeRouter);
