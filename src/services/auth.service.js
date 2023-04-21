@@ -50,7 +50,7 @@ const createUser = catchAsync(async (body) => {
   // console.log(password);
 
   //save data
-  const newUser = await userModel.insertMany({
+  const newUser = await userModel.create({
     name,
     email,
     password,
@@ -61,7 +61,7 @@ const createUser = catchAsync(async (body) => {
     address,
     pincode,
   });
-
+  console.log(newUser);
   // Generate token
   const token = signToken(newUser._id);
 
@@ -117,7 +117,10 @@ const signin = catchAsync(async (body) => {
 
   // Generate token
   const token = signToken(userData._id);
-  console.log(token);
+
+  // set password undefined
+  userData.password = undefined;
+
   //send response
   return {
     status: "Success",
@@ -172,5 +175,23 @@ const changePassword = catchAsync(
     };
   }
 );
+
+const forgotPassword = catchAsync(async (body) => {
+  // find into database
+  const user = userModel.findOne({ email: body.email });
+
+  //
+  if (!user) {
+    return {
+      status: "fail!",
+      message: "There is no user with this email address!",
+      statusCode: 404,
+    };
+  }
+
+  //   Generate the random reset token
+  const resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
+});
 
 module.exports = { createUser, signin, changePassword };

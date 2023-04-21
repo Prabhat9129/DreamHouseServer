@@ -9,8 +9,6 @@ const signToken = (id) => {
 };
 
 const createSendToken = (user, utoken, status, statusCode, message, res) => {
-  // const token = utoken;
-  console.log(process.env.JWT_COOKIE_EXPIRES_IN);
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -22,15 +20,14 @@ const createSendToken = (user, utoken, status, statusCode, message, res) => {
   res.cookie("jwt", utoken, cookieOptions);
 
   // Remove password from output
+
   // user.password = undefined;
 
   res.status(statusCode).json({
     status,
     message,
     utoken,
-    data: {
-      user,
-    },
+    user,
   });
 };
 module.exports = { signToken, createSendToken };
