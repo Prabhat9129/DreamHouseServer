@@ -3,6 +3,7 @@ const catchAsync = require("../utils/asyncFunction");
 const { signToken, createSendToken } = require("../middleware/token");
 
 const createdUser = catchAsync(async (req, res) => {
+  console.log(req.body);
   const { status, message, statusCode, data, token } =
     await userService.createUser(req);
 
@@ -48,4 +49,22 @@ const logout = catchAsync((req, res) => {
     message: "Logout Successfully!",
   });
 });
-module.exports = { createdUser, Signedin, changedPassword, logout };
+
+const forgotPassword = catchAsync(async (req, res) => {
+  console.log(req.body);
+  const { status, message, statusCode } = await userService.forgotPassword(req);
+  // console.log(status, message);
+  res.status(statusCode).json({
+    status,
+    message,
+    statusCode,
+  });
+});
+
+module.exports = {
+  createdUser,
+  Signedin,
+  changedPassword,
+  logout,
+  forgotPassword,
+};

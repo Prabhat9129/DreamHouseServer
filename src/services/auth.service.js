@@ -1,12 +1,15 @@
 const userModel = require("../Models/user.model");
 const catchAsync = require("../utils/asyncFunction");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const { signToken } = require("../middleware/token");
+const { sendEmail } = require("../utils/sendEmail");
 
-const createUser = catchAsync(async (body) => {
+const createUser = catchAsync(async (req) => {
   //Destructuring body
-  let { name, email, password, role } = body.body;
-  let { number, gender, city_id, address, pincode } = body.body;
+  console.log(req.body);
+  let { name, email, password, role } = req.body;
+  let { number, gender, city_id, address, pincode } = req.body;
 
   //assign null if field is not required
   if (!number) number = "";
@@ -189,9 +192,63 @@ const forgotPassword = catchAsync(async (body) => {
     };
   }
 
-  //   Generate the random reset token
-  const resetToken = user.createPasswordResetToken();
-  await user.save({ validateBeforeSave: false });
+  // const resetToken = crypto.randomBytes(20).toString("hex");
+  // userModel.resetPasswordToken = crypto
+  //   .createHash("sha256")
+  //   .update(resetToken)
+  //   .digest("hex");
+  // userModel.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+  // // await userModel.save({ validateBeforeSave: false });
+  // const resetUrl = `${body.protocol}://${body.get(
+  //   "host"
+  // )}/app/resetpassword${resetToken}`;
+  // const message = `your reset password url is here ${resetUrl}`;
+
+  // try {
+  //   await sendEmail({
+  //     email: user.email,
+  //     subject: "password recovery",
+  //     message,
+  //   });
+  //   return {
+  //     status: true,
+  //     message: `email sent to ${user.email} successfuly`,
+  //     statusCode: 404,
+  //   };
+  //   // res.status(200).json({
+  //   //   success: true,
+  //   //   message: `email sent to ${user.email} successfuly`,
+  //   // });
+  // } catch (error) {
+  //   // (userModel.resetPasswordToken = undefined),
+  //   //   (userModel.resetPasswordExpire = undefined),
+  //   //   await userModel.save({ validateBeforeSave: false });
+  //   return {
+  //     status: "error",
+  //     message: error.message,
+  //     statusCode: 500,
+  //   };
+  //   // next(new Errorhandler(error.message, 500));
+  // }
 });
 
-module.exports = { createUser, signin, changePassword };
+module.exports = { createUser, signin, changePassword, forgotPassword };
+// const token = crypto.randomBytes(20).toString("hex");
+
+// user.resetPasswordToken = token;
+// user.resetPasswordExpires = Date.now() + 3600000; // Token expires in 1 hour
+// await user.save();
+
+// const resetUrl = `http://${req.headers.host}/resetPassword/${token}`;
+
+// const message = {
+//   to: user.email,
+//   subject: "Password Reset Request",
+//   html: `<p>Click <a href="${resetUrl}">here</a> to reset your password.</p>`,
+// };
+
+//   await mailService.send(message)
+//   return res.status(200).json({ message: 'Password reset email sent' });
+// });
+
+//   Generate the random reset token

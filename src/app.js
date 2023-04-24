@@ -1,6 +1,7 @@
 //NPM pacakages
 const express = require("express");
 const bodyParser = require("body-parser");
+const multer = require("multer");
 const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
@@ -47,7 +48,8 @@ app.use(express.json());
 //set security http headers
 app.use(helmet());
 //
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // connect to mongo

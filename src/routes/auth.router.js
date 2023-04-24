@@ -6,11 +6,13 @@ const {
   Signedin,
   changedPassword,
   logout,
+  forgotPassword,
 } = require("../controller/auth.controller");
 
 router.post("/signup", createdUser);
 router.post("/signin", Signedin);
 router.get("/logout", logout);
+router.post("/forgotpassword", forgotPassword);
 
 router.use(protect);
 router.patch("/PasswordUpadte", changedPassword, () => {
