@@ -25,6 +25,7 @@ const createSendToken = (user, utoken, status, statusCode, message, res) => {
 
   res.status(statusCode).json({
     status,
+    statusCode,
     message,
     utoken,
     user,

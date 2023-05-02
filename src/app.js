@@ -26,7 +26,11 @@ const connect = async () => {
     console.log(`${err.message}`);
   }
 };
-
+app.use(
+  cors({
+    origin: "http://localhost:4200",
+  })
+);
 //limit request from same Api
 const limiter = rateLimit({
   max: 1,
@@ -36,11 +40,6 @@ const limiter = rateLimit({
 app.use(limiter);
 
 //
-app.use(
-  cors({
-    origin: "http://localhost:4200",
-  })
-);
 
 // body parser, reading data from body into req body.
 app.use(express.json());
