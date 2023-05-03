@@ -31,7 +31,7 @@ const createUser = catchAsync(async (req) => {
   if (password.length < 8) {
     return {
       status: "Error",
-      message: "PasswordLength must be greater than 8 character",
+      message: "PasswordLength must be Greater  or Equal to 8 character",
       statusCode: 400,
     };
   }
