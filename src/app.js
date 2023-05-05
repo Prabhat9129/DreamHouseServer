@@ -19,6 +19,21 @@ const protect = require("./middleware/protect.middleware");
 
 const app = express();
 
+<<<<<<< HEAD
+=======
+const connect = async () => {
+  try {
+    await mongoConnection();
+  } catch (err) {
+    console.log(`${err.message}`);
+  }
+};
+app.use(
+  cors({
+    origin: "http://localhost:4200",
+  })
+);
+>>>>>>> d63c79040c5afea230a47ec3a43100a8fd721744
 //limit request from same Api
 const limiter = rateLimit({
   max: 1,
@@ -27,12 +42,16 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+<<<<<<< HEAD
 //Implement CORS
 app.use(
   cors({
     origin: "http://localhost:4200",
   })
 );
+=======
+//
+>>>>>>> d63c79040c5afea230a47ec3a43100a8fd721744
 
 //set security http headers
 app.use(helmet());
