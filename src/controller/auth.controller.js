@@ -1,6 +1,7 @@
 const userService = require("../services/auth.service");
 const catchAsync = require("../utils/asyncFunction");
 const { signToken, createSendToken } = require("../middleware/token");
+const { clearConfigCache } = require("prettier");
 
 const createdUser = catchAsync(async (req, res) => {
   console.log(req.body);
