@@ -1,11 +1,9 @@
-const userModel = require("../Models/user.model");
-const catchAsync = require("../utils/asyncFunction");
-const crypto=require("crypto");
+const crypto = require("crypto");
 const bcrypt = require("bcrypt");
-const AppError=require("../utils/appError")
+const AppError = require("../utils/appError");
 
 const { signToken } = require("../middleware/token");
-const  sendEmail  = require("../utils/sendEmail");
+const sendEmail = require("../utils/sendEmail");
 
 const createUser = catchAsync(async (req) => {
   //Destructuring body
@@ -83,6 +81,12 @@ const createUser = catchAsync(async (req) => {
   };
 });
 
+/**
+ * @desc    Sign In Service
+ * @param   { String } email - User email address
+ * @param   { String } password - User password
+ * @return  { Object<type|statusCode|message|user|tokens> }
+ */
 const signin = catchAsync(async (req) => {
   //Destructuring body
   const { email, password } = req.body;
@@ -183,35 +187,35 @@ const changePassword = catchAsync(
 
 const forgotPassword = catchAsync(async (req) => {
   // find into database
-  console.log(req.body.email)
-  const {email}=req.body
-  const user =await userModel.findOne({ email: email });
-console.log(user);
-  
+  console.log(req.body.email);
+  const { email } = req.body;
+  const user = await userModel.findOne({ email: email });
+  console.log(user);
+
   if (!user) {
     return {
       status: "Error",
       message: "There is no user with this email address!",
       statusCode: 404,
-    }
-  };
+    };
+  }
 
-    // 2- Generate the random reset token
-    
+  // 2- Generate the random reset token
+
   const resetToken = user.getresetPasswordToken();
   await user.save();
 
-   // 3- Send it to user's email
-   const resetURL = `${req.protocol}://${req.get('host')}/resetPassword/${resetToken}`;
-
+  // 3- Send it to user's email
+  const resetURL = `http://localhost:4200/resetpassword/${resetToken}`;
+  console.log(resetURL);
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.
   \nIf you didn't forget your password, please ignore this email!`;
 
   try {
-   await sendEmail({
+    await sendEmail({
       email: user.email,
-      subject: 'Your password reset token (valid for 10 min)',
-      message
+      subject: "Your password reset token (valid for 10 min)",
+      message,
     });
 
     return {
@@ -223,28 +227,28 @@ console.log(user);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save();
-    return{
+    return {
       status: "Error!",
       message: "There was an error sending the email. Try again later!",
-      statusCode: 500
-    }
+      statusCode: 500,
+    };
   }
 });
 
-const resetPassword=catchAsync(async(req)=>{
+const resetPassword = catchAsync(async (req) => {
   // 1- Get user based on the token
-  console.log(req.params.token)
+  console.log(req.params.token);
   const hashedToken = crypto
-    .createHash('sha256')
+    .createHash("sha256")
     .update(req.params.token)
-    .digest('hex');
+    .digest("hex");
 
   const user = await userModel.findOne({
     resetPasswordToken: hashedToken,
-    resetPasswordExpire: { $gt: Date.now() }
+    resetPasswordExpire: { $gt: Date.now() },
   });
 
-  console.log(user)
+  console.log(user);
 
   // 2- If token has not expired, and there is user, set the new password
   if (!user) {
@@ -252,24 +256,28 @@ const resetPassword=catchAsync(async(req)=>{
       status: "Error",
       message: "Token is invalid or has expired",
       statusCode: 400,
-    }
+    };
   }
-  user.password = req.body.password;
+
+  console.log(req.body);
+  user.password = req.body.newpassword;
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   await user.save();
-
-  // 3- Update changedPasswordAt property for the user
-  // 4) Log the user in, send JWT
-
   return {
-    status:'success',
-    message:'Reset password successfully',
-    statusCode:200,
-    user
-  }
- 
-})
+    status: "success",
+    message: "Reset password successfully",
+    statusCode: 200,
+    user,
+  };
+});
 
-module.exports = { createUser, signin, changePassword, forgotPassword,resetPassword };
+module.exports = {
+  createUser,
+  signin,
+  changePassword,
+  forgotPassword,
+  resetPassword,
+  updateProfile,
+};

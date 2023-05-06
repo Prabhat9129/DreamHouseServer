@@ -7,17 +7,18 @@ const {
   changedPassword,
   logout,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  updateProfile,
 } = require("../controller/auth.controller");
 
 router.post("/signup", createdUser);
 router.post("/signin", Signedin);
 router.get("/logout", logout);
+router.post("/forgotpassword", forgotPassword);
 router.patch("/resetpassword/:token", resetPassword);
 
 router.use(protect);
 router.patch("/PasswordUpadte", changedPassword);
-router.post("/forgotpassword", forgotPassword);
-
+router.patch("/updateProfile", updateProfile);
 
 module.exports = router;
