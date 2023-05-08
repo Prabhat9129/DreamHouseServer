@@ -35,7 +35,7 @@ export const updateProfile = catchAsync(async (body, profileImage) => {
     };
   }
 
-  const isEmailTaken = await User.isEmailTaken(email);
+  const isEmailTaken = await userModel.isEmailTaken(email);
 
   // 3) Check if email already taken
   if (isEmailTaken) {
