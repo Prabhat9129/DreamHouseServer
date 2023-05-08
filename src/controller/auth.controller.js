@@ -1,6 +1,7 @@
 const userService = require("../services/auth.service");
 const catchAsync = require("../utils/asyncFunction");
 const { signToken, createSendToken } = require("../middleware/token");
+// const { clearConfigCache } = require("prettier");
 
 const createdUser = catchAsync(async (req, res) => {
   console.log(req.body);
@@ -19,8 +20,8 @@ const Signedin = catchAsync(async (req, res) => {
 });
 
 const changedPassword = catchAsync(async (req, res) => {
-  const { currPass, newPass, passConformation } = req.body;
-  if (!currPass || !newPass || !passConformation) {
+  const { currentpassword, newpassword, conformpassword } = req.body;
+  if (!currentpassword || !newpassword || !conformpassword) {
     return {
       status: "Error",
       message: "fields are Required",
@@ -29,9 +30,9 @@ const changedPassword = catchAsync(async (req, res) => {
   }
 
   const { status, message, statusCode } = await userService.changePassword(
-    currPass,
-    newPass,
-    passConformation,
+    currentpassword,
+    newpassword,
+    conformpassword,
     req.user._id
   );
   const token = signToken(req.user._id);
@@ -53,18 +54,44 @@ const logout = catchAsync((req, res) => {
 const forgotPassword = catchAsync(async (req, res) => {
   console.log(req.body);
   const { status, message, statusCode } = await userService.forgotPassword(req);
-  // console.log(status, message);
+  console.log(status, message);
   res.status(statusCode).json({
-    status,
-    message,
-    statusCode,
+    status: status,
+    message: message,
+    statusCode: statusCode,
   });
 });
 
+const resetPassword = catchAsync(async (req, res) => {
+  console.log(req.params);
+  const { newpassword, conformpassword } = req.body;
+  if (!newpassword || !conformpassword) {
+    res.status(400).json({
+      status: "Error",
+      message: "fields are Required",
+      statusCode: 400,
+    });
+  }
+  const { status, message, statusCode, user } = await userService.resetPassword(
+    req
+  );
+
+  console.log(req.user);
+  const token = signToken(user._id);
+
+  createSendToken(user, token, status, statusCode, message, res);
+});
+
+const updateProfile = catchAsync(async (req, res) => {
+  console.log("hello profile controller");
+  userService.updateProfile();
+});
 module.exports = {
   createdUser,
   Signedin,
   changedPassword,
   logout,
   forgotPassword,
+  resetPassword,
+  updateProfile,
 };
