@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
-const AppError = require("../utils/appError");
-
+const userModel = require("../Models/user.model");
+const catchAsync = require("../utils/asyncFunction");
 const { signToken } = require("../middleware/token");
 const sendEmail = require("../utils/sendEmail");
 
@@ -81,12 +81,12 @@ const createUser = catchAsync(async (req) => {
   };
 });
 
-/**
- * @desc    Sign In Service
- * @param   { String } email - User email address
- * @param   { String } password - User password
- * @return  { Object<type|statusCode|message|user|tokens> }
- */
+// /**
+//  * @desc    Sign In Service
+//  * @param   { String } email - User email address
+//  * @param   { String } password - User password
+//  * @return  { Object<type|statusCode|message|user|tokens> }
+//  */
 const signin = catchAsync(async (req) => {
   //Destructuring body
   const { email, password } = req.body;
@@ -208,8 +208,7 @@ const forgotPassword = catchAsync(async (req) => {
   // 3- Send it to user's email
   const resetURL = `http://localhost:4200/resetpassword/${resetToken}`;
   console.log(resetURL);
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.
-  \nIf you didn't forget your password, please ignore this email!`;
+  const message = `<p>Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: <a href="${resetURL}">here</a> to reset your password.<br/><h5>\nIf you did not forget your password, please ignore this email!</h5></p>`;
 
   try {
     await sendEmail({
@@ -260,8 +259,9 @@ const resetPassword = catchAsync(async (req) => {
   }
 
   console.log(req.body);
-  user.password = req.body.newpassword;
-  user.passwordConfirm = req.body.passwordConfirm;
+  const salt = await bcrypt.genSalt();
+  password = bcrypt.hashSync(req.body.newpassword, salt);
+  user.password = password;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   await user.save();
@@ -279,5 +279,4 @@ module.exports = {
   changePassword,
   forgotPassword,
   resetPassword,
-  updateProfile,
 };
