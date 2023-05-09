@@ -1,15 +1,16 @@
 //NPM pacakages
 const express = require("express");
 const bodyParser = require("body-parser");
-const multer = require("multer");
 const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const cors = require("cors");
+const fileUpload=require("express-fileupload");
 
 //import created modules
 const { mongoConnection } = require("./config/db");
 const authRouter = require("./routes/auth.router");
+const userRouter=require("./routes/user.router");
 const resident_typeRouter = require("./routes/resident_type.router");
 const property_typeRouter = require("./routes/property_type.router");
 const propertyRouter = require("./routes/properties.router");
@@ -19,6 +20,7 @@ const protect = require("./middleware/protect.middleware");
 
 const app = express();
 
+//Implement CORS
 app.use(
   cors({
     origin: "http://localhost:4200",
@@ -28,9 +30,14 @@ app.use(
 const limiter = rateLimit({
   max: 1,
   windowMs: 1 * 1000,
-  message: "Too many request from this IP, please try after some time",
+  message: "Too many request from this IP, please try in an Hour",
 });
 app.use(limiter);
+
+//file upload
+app.use(fileUpload({
+  useTempFiles:true
+}))
 
 //set security http headers
 app.use(helmet());
@@ -48,6 +55,7 @@ mongoConnection();
 // Routers
 app.use(authRouter);
 app.use(protect);
+app.use(userRouter);
 app.use(resident_typeRouter);
 app.use(property_typeRouter);
 app.use(propertyRouter);

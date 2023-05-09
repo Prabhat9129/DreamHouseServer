@@ -1,85 +1,81 @@
 const userModel = require("../Models/user.model");
 const catchAsync = require("../utils/asyncFunction");
+const { uploadFile, destroyFile } =require('../utils/cloudnary');
 
-export const updateProfile = catchAsync(async (body, profileImage) => {
-  // 1) Check if profile image provided
+
+ const updateProfile = catchAsync(async (req) => {
+ 
+  console.log(req.files.profileImage)
+  const profileImage=req.files.profileImage
+  // 1- Check if profile image provided
   if (profileImage === undefined) {
     return {
-      type: "Error",
-      message: "profileImageRequired",
+      status: "Error",
+      message: "profileImage is Required",
       statusCode: 400,
     };
   }
 
-  const { name, username, email, password, passwordConfirmation, role } = body;
-  let { companyName, address, phone } = body;
+  const { name, email, password,  role ,number,gender,city_id,address,pincode} = req.body;
+ 
 
-  if (!companyName) companyName = "";
-  if (!address) address = "";
-  if (!phone) phone = "";
-
-  // 2) Check required fields
+  // 2- Check required fields
   if (
     !name ||
-    !username ||
     !email ||
     !password ||
-    !passwordConfirmation ||
     !role ||
+    !number ||
+    !gender ||
+    !city_id ||
+    !address ||
+    !pincode ||
     profileImage.length === 0
   ) {
     return {
-      type: "Error",
-      message: "fieldsRequired",
+      status: "Error",
+      message: "fields are Required",
       statusCode: 400,
     };
   }
 
-  const isEmailTaken = await userModel.isEmailTaken(email);
+//3- check email is there
 
-  // 3) Check if email already taken
-  if (isEmailTaken) {
-    return {
-      type: "Error",
-      message: "emailTaken",
-      statusCode: 409,
-    };
-  }
+  
 
   // 4) Specifiy folder name where the images are going to be uploaded in cloudinary
   const folderName = `Users/${name.trim().split(" ").join("")}`;
 
-  // 5) Upload image to cloudinary
+  // 5- Upload image to cloudinary
   const image = await uploadFile(
-    dataUri(profileImage).content,
+    profileImage,
     folderName,
     600
   );
 
-  // 6) Create new user
-  const user = await User.create({
+  // 6- Create new user
+  console.log(req.user._id)
+  const updatedata = await userModel.updateOne({_id:req.user._id},{
     name,
-    username,
     email,
     password,
-    passwordConfirmation,
     role,
-    companyName,
-    address,
-    phone,
+    number,
+    gender,
     profileImage: image.secure_url,
-    profileImageId: image.public_id,
+    address,
+    city_id,
+    pincode,
   });
 
-  // 7) If everything is OK, send data
+  console.log(updatedata)
+  // 7- If everything is OK, send data
   return {
-    type: "Success",
-    message: "successfulSignUp",
+    status: "Success",
+    message: "data updated successfully!",
     statusCode: 201,
-    user,
+    updatedata,
   };
 });
 
-module.exports = {
-  updateProfile,
-};
+module.exports = {updateProfile};

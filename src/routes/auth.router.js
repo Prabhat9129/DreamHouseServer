@@ -8,7 +8,7 @@ const {
   logout,
   forgotPassword,
   resetPassword,
-  updateProfile,
+  
 } = require("../controller/auth.controller");
 
 router.post("/signup", createdUser);
@@ -19,6 +19,5 @@ router.patch("/resetpassword/:token", resetPassword);
 
 router.use(protect);
 router.patch("/PasswordUpadte", changedPassword);
-router.patch("/updateProfile", updateProfile);
 
 module.exports = router;

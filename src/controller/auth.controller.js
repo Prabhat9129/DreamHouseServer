@@ -81,11 +81,6 @@ const resetPassword = catchAsync(async (req, res) => {
 
   createSendToken(user, token, status, statusCode, message, res);
 });
-
-const updateProfile = catchAsync(async (req, res) => {
-  console.log("hello profile controller");
-  userService.updateProfile();
-});
 module.exports = {
   createdUser,
   Signedin,
@@ -93,5 +88,5 @@ module.exports = {
   logout,
   forgotPassword,
   resetPassword,
-  updateProfile,
+ 
 };
