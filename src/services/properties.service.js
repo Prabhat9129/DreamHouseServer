@@ -5,15 +5,17 @@ const catchAsync = require("../utils/asyncFunction");
 const propertiesModel = require("../Models/property.model");
 const properties_typeModel = require("../Models/property_type.model");
 const resident_typeModel = require("../Models/resident_type.model");
+const { City } = require("country-state-city");
 
 const CountryState = catchAsync(async () => {
-  const country = Country.getAllCountries();
   const state = State.getAllStates();
+  const city = City.getAllCities();
   return {
     status: "success",
     statusCode: 200,
     data: {
       state: state,
+      city: city,
     },
   };
 });

@@ -1,14 +1,15 @@
 const userModel = require("../Models/user.model");
 const catchAsync = require("../utils/asyncFunction");
-const { uploadFile, destroyFile } =require('../utils/cloudnary');
+const { uploadFile, destroyFile } = require("../utils/cloudnary");
 
-
- const updateProfile = catchAsync(async (req) => {
- 
-  console.log(req.files.profileImage)
-  const profileImage=req.files.profileImage
+const updateProfile = catchAsync(async (req) => {
+  console.log("helloooo file");
+  console.log(req);
+  console.log(req.files);
+  const profileImage = req.files.profileImg.tempFilePath;
+  console.log(profileImage);
   // 1- Check if profile image provided
-  if (profileImage === undefined) {
+  if (!profileImage) {
     return {
       status: "Error",
       message: "profileImage is Required",
@@ -16,15 +17,22 @@ const { uploadFile, destroyFile } =require('../utils/cloudnary');
     };
   }
 
-  const { name, email, password,  role ,number,gender,city_id,address,pincode} = req.body;
- 
+  const {
+    name,
+    email,
+    password,
+    role,
+    number,
+    gender,
+    city_id,
+    address,
+    pincode,
+  } = req.body;
 
   // 2- Check required fields
   if (
     !name ||
     !email ||
-    !password ||
-    !role ||
     !number ||
     !gender ||
     !city_id ||
@@ -39,36 +47,32 @@ const { uploadFile, destroyFile } =require('../utils/cloudnary');
     };
   }
 
-//3- check email is there
-
-  
+  //3- check email is there
 
   // 4) Specifiy folder name where the images are going to be uploaded in cloudinary
   const folderName = `Users/${name.trim().split(" ").join("")}`;
 
   // 5- Upload image to cloudinary
-  const image = await uploadFile(
-    profileImage,
-    folderName,
-    600
+  const image = await uploadFile(profileImage, folderName, 600);
+  console.log(image);
+  // 6- Update  user
+  const updatedata = await userModel.updateOne(
+    { _id: req.user._id },
+    {
+      name,
+      email,
+      password,
+      role,
+      number,
+      gender,
+      profileImg: image.secure_url,
+      address,
+      city_id,
+      pincode,
+    }
   );
 
-  // 6- Create new user
-  console.log(req.user._id)
-  const updatedata = await userModel.updateOne({_id:req.user._id},{
-    name,
-    email,
-    password,
-    role,
-    number,
-    gender,
-    profileImage: image.secure_url,
-    address,
-    city_id,
-    pincode,
-  });
-
-  console.log(updatedata)
+  // console.log(updatedata);
   // 7- If everything is OK, send data
   return {
     status: "Success",
@@ -78,4 +82,4 @@ const { uploadFile, destroyFile } =require('../utils/cloudnary');
   };
 });
 
-module.exports = {updateProfile};
+module.exports = { updateProfile };
