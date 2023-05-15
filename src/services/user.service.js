@@ -3,11 +3,7 @@ const catchAsync = require("../utils/asyncFunction");
 const { uploadFile, destroyFile } = require("../utils/cloudnary");
 
 const updateProfile = catchAsync(async (req) => {
-  console.log("helloooo file");
-  console.log(req);
-  console.log(req.files);
   const profileImage = req.files.profileImg.tempFilePath;
-  console.log(profileImage);
   // 1- Check if profile image provided
   if (!profileImage) {
     return {
@@ -82,4 +78,19 @@ const updateProfile = catchAsync(async (req) => {
   };
 });
 
-module.exports = { updateProfile };
+
+const getUser=catchAsync(async(req)=>{
+
+  const userdata = await userModel.findById(
+    { _id: req.user._id }
+  );
+  return {
+    status: "Success",
+    message: "data fetch successfully!",
+    statusCode: 200,
+    userdata,
+  };
+
+})
+
+module.exports = { updateProfile , getUser};
