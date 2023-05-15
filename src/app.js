@@ -5,12 +5,12 @@ const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const cors = require("cors");
-const fileUpload=require("express-fileupload");
+const fileUpload = require("express-fileupload");
 
 //import created modules
 const { mongoConnection } = require("./config/db");
 const authRouter = require("./routes/auth.router");
-const userRouter=require("./routes/user.router");
+const userRouter = require("./routes/user.router");
 const resident_typeRouter = require("./routes/resident_type.router");
 const property_typeRouter = require("./routes/property_type.router");
 const propertyRouter = require("./routes/properties.router");
@@ -26,18 +26,20 @@ app.use(
     origin: "http://localhost:4200",
   })
 );
-//limit request from same Api
-const limiter = rateLimit({
-  max: 1,
-  windowMs: 1 * 1000,
-  message: "Too many request from this IP, please try in an Hour",
-});
-app.use(limiter);
+// //limit request from same Api
+// const limiter = rateLimit({
+//   max: 1,
+//   windowMs: 1 * 1000,
+//   message: "Too many request from this IP, please try in an Hour",
+// });
+// app.use(limiter);
 
 //file upload
-app.use(fileUpload({
-  useTempFiles:true
-}))
+app.use(
+  fileUpload({
+    useTempFiles: true,
+  })
+);
 
 //set security http headers
 app.use(helmet());

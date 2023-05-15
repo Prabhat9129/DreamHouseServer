@@ -13,22 +13,11 @@ const updateProfile = catchAsync(async (req) => {
     };
   }
 
-  const {
-    name,
-    email,
-    password,
-    role,
-    number,
-    gender,
-    city_id,
-    address,
-    pincode,
-  } = req.body;
+  const { name, number, gender, city_id, address, pincode } = req.body;
 
   // 2- Check required fields
   if (
     !name ||
-    !email ||
     !number ||
     !gender ||
     !city_id ||
@@ -56,9 +45,6 @@ const updateProfile = catchAsync(async (req) => {
     { _id: req.user._id },
     {
       name,
-      email,
-      password,
-      role,
       number,
       gender,
       profileImg: image.secure_url,
@@ -67,7 +53,7 @@ const updateProfile = catchAsync(async (req) => {
       pincode,
     }
   );
-
+  // updatedata.profileImg = image.public_id;
   // console.log(updatedata);
   // 7- If everything is OK, send data
   return {
@@ -78,19 +64,14 @@ const updateProfile = catchAsync(async (req) => {
   };
 });
 
-
-const getUser=catchAsync(async(req)=>{
-
-  const userdata = await userModel.findById(
-    { _id: req.user._id }
-  );
+const getUser = catchAsync(async (req) => {
+  const userdata = await userModel.findById({ _id: req.user._id });
   return {
     status: "Success",
     message: "data fetch successfully!",
     statusCode: 200,
     userdata,
   };
+});
 
-})
-
-module.exports = { updateProfile , getUser};
+module.exports = { updateProfile, getUser };
