@@ -4,6 +4,7 @@ const { uploadFile, destroyFile } = require("../utils/cloudnary");
 
 const updateProfile = catchAsync(async (req) => {
   const profileImage = req.files.profileImg.tempFilePath;
+  console.log(req.files)
   // 1- Check if profile image provided
   if (!profileImage) {
     return {
@@ -59,7 +60,7 @@ const updateProfile = catchAsync(async (req) => {
   return {
     status: "Success",
     message: "data updated successfully!",
-    statusCode: 201,
+    statusCode: 200,
     updatedata,
   };
 });
