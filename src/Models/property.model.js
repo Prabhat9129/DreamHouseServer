@@ -5,10 +5,15 @@ const propertySchma = new mongoose.Schema({
     ref: "user",
     require: [true, "User id is required"],
   },
-  //   society_id: {},
-  properties_type_id: {
+  title: { type: String, require: [true, "Property Title is required!"] },
+  description: {
+    type: String,
+    require: [true, "Descrption about property is required!"],
+  },
+  status: { type: String, require: [true, "Status is require!"] },
+  type: {
     type: mongoose.Types.ObjectId,
-    require: [true, "Please provide property Type id!"],
+    require: [true, "Please provide property Type!"],
   },
   //   city_id: {},
   resident_type_id: {
@@ -20,7 +25,6 @@ const propertySchma = new mongoose.Schema({
     require: [true, "what is the price of your property!"],
   },
   size: { type: String, require: [true, "tell your property size!"] },
-  status: { type: String },
   //   Area: {},
   profile: { type: String },
   allowance: { type: Boolean },

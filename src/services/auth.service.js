@@ -2,14 +2,12 @@ const userModel = require("../Models/user.model");
 const catchAsync = require("../utils/asyncFunction");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
-const AppError = require("../utils/appError");
 
 const { signToken } = require("../middleware/token");
 const sendEmail = require("../utils/sendEmail");
 
 const createUser = catchAsync(async (req) => {
   //Destructuring body
-  console.log(req.body);
   let { name, email, password, role } = req.body;
   let { number, gender, city_id, address, pincode } = req.body;
 
@@ -49,10 +47,18 @@ const createUser = catchAsync(async (req) => {
     };
   }
 
+  // check user role
+  if (role === "admin") {
+    return {
+      status: "Error",
+      message: "Unappropriate Role !",
+      statusCode: 400,
+    };
+  }
+
   //password decrption
   const salt = await bcrypt.genSalt();
   password = bcrypt.hashSync(password, salt);
-  // console.log(password);
 
   //save data
   const newUser = await userModel.create({
@@ -66,9 +72,6 @@ const createUser = catchAsync(async (req) => {
     address,
     pincode,
   });
-  console.log(newUser);
-  // Generate token
-  const token = signToken(newUser._id);
 
   // Remove password from output
   newUser.password = undefined;
@@ -78,8 +81,7 @@ const createUser = catchAsync(async (req) => {
     status: "Success",
     message: "user register successfully",
     statusCode: 201,
-    data: newUser,
-    token,
+    user: newUser,
   };
 });
 

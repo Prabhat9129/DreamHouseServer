@@ -15,13 +15,4 @@ const propertyAdded = catchAsync(async (req, res) => {
   });
 });
 
-const countryState = catchAsync(async (req, res) => {
-  const { status, statusCode, data } = await propertyService.CountryState();
-  return res.status(statusCode).json({
-    status,
-    statusCode,
-    data,
-  });
-});
-
-module.exports = { propertyAdded, countryState };
+module.exports = { propertyAdded };

@@ -2,23 +2,6 @@ const catchAsync = require("../utils/asyncFunction");
 const propertiesModel = require("../Models/property.model");
 const properties_typeModel = require("../Models/property_type.model");
 const resident_typeModel = require("../Models/resident_type.model");
-const { Country, City, State } = require("country-state-city");
-
-const CountryState = catchAsync(async () => {
-  const state = State.getAllStates();
-  const country = Country.getAllCountries();
-  const city = City.getAllCities();
-  // console.log(city.)
-  return {
-    status: "success",
-    statusCode: 200,
-    data: {
-      country: country,
-      state: state,
-      city: city,
-    },
-  };
-});
 
 const addProperty = catchAsync(async (body) => {
   //Destructing body
@@ -97,4 +80,4 @@ const addProperty = catchAsync(async (body) => {
   };
 });
 
-module.exports = { addProperty, CountryState };
+module.exports = { addProperty };

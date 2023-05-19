@@ -41,7 +41,7 @@ const protect = catchAsync(async (req, res, next) => {
   if (!currUser) {
     return next(new appError(`user doesn't exists related to this token`, 401));
   }
-
+  currUser.password = undefined;
   req.user = currUser;
 
   next();

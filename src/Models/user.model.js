@@ -42,20 +42,19 @@ const userSchema = new mongoose.Schema({
   city_id: { type: String },
   address: { type: String },
   pincode: { type: Number },
-  passwordChangedAt:Date,
+  passwordChangedAt: Date,
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });
 
-userSchema.pre('save', function(next) {
-  if (!this.isModified('password') || this.isNew) return next();
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
 userSchema.methods.getresetPasswordToken = function () {
-  console.log('hey token is here')
   const resetToken = crypto.randomBytes(20).toString("hex");
   this.resetPasswordToken = crypto
     .createHash("sha256")

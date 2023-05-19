@@ -1,14 +1,17 @@
 const userService = require("../services/auth.service");
 const catchAsync = require("../utils/asyncFunction");
 const { signToken, createSendToken } = require("../middleware/token");
-// const { clearConfigCache } = require("prettier");
 
 const createdUser = catchAsync(async (req, res) => {
-  console.log(req.body);
-  const { status, message, statusCode, data, token } =
-    await userService.createUser(req);
-
-  createSendToken(data, token, status, statusCode, message, res);
+  const { status, message, statusCode, user } = await userService.createUser(
+    req
+  );
+  res.status(statusCode).json({
+    status: status,
+    statusCode: statusCode,
+    message: message,
+    user,
+  });
 });
 
 const Signedin = catchAsync(async (req, res) => {
@@ -88,5 +91,4 @@ module.exports = {
   logout,
   forgotPassword,
   resetPassword,
- 
 };

@@ -13,7 +13,7 @@ const mongoConnection = async () => {
   mongoose
     .connect(mongoURL)
     .then(() => {
-      console.log("Connected to MongoDB database");
+      // console.log("Connected to MongoDB database");
     })
     .catch((err) => {
       console.error("Error connecting to MongoDB database:", err.message);
@@ -21,7 +21,7 @@ const mongoConnection = async () => {
 
   // Once database connection is established
   mongoose.connection.once("open", () => {
-    console.log("connection redy");
+    console.log("Connection Redy...");
   });
 
   // Handle MongoDB connection errors

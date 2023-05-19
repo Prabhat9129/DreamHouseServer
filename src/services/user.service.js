@@ -4,7 +4,7 @@ const { uploadFile, destroyFile } = require("../utils/cloudnary");
 
 const updateProfile = catchAsync(async (req) => {
   const profileImage = req.files.profileImg.tempFilePath;
-  console.log(req.files)
+  console.log(req.files);
   // 1- Check if profile image provided
   if (!profileImage) {
     return {
@@ -67,6 +67,7 @@ const updateProfile = catchAsync(async (req) => {
 
 const getUser = catchAsync(async (req) => {
   const userdata = await userModel.findById({ _id: req.user._id });
+  userdata.password = undefined;
   return {
     status: "Success",
     message: "data fetch successfully!",
