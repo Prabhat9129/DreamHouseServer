@@ -1,9 +1,9 @@
 const property_typeModel = require("../Models/property_type.model");
 const catchAsync = require("../utils/asyncFunction");
 
-const addProperty_type = catchAsync(async (body) => {
+const addProperty_type = catchAsync(async (req) => {
   //destructuring body
-  const { name } = body.body;
+  const { name } = req.body;
 
   // check value input or not
   if (!name) {
@@ -27,7 +27,7 @@ const addProperty_type = catchAsync(async (body) => {
 
   //save data
   let data = {};
-  if (body.user.role === "admin") {
+  if (req.user.role === "admin") {
     data = await property_typeModel.insertMany({
       name,
     });
@@ -39,11 +39,13 @@ const addProperty_type = catchAsync(async (body) => {
       data,
     };
   }
+
+  const properties_type = await property_typeModel.find()
   return {
     status: "success",
     message: "property_type added successfully",
     statusCode: 201,
-    data,
+    data:properties_type
   };
 });
 
@@ -103,12 +105,13 @@ const updateProperty_type = catchAsync(async (req) => {
       new: true,
     }
   );
-  // console.log(updatedData);
+
+  const properties_type = await property_typeModel.find({new:true});
   return {
     status: "success",
     message: "Property Type is updated successfully!",
     statusCode: 200,
-    data: updatedData,
+    data: properties_type,
   };
 });
 
@@ -134,11 +137,12 @@ const deleteProperty_type = catchAsync(async (req) => {
     _id: property._id.toString(),
   });
 
+  const properties_type = await property_typeModel.find();
   return {
     status: "success",
     message: "Property Type is deleted successfully!",
     statusCode: 200,
-    data: deletedata,
+    data: properties_type,
   };
 });
 module.exports = {

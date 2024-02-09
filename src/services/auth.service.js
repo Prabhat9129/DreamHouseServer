@@ -204,7 +204,7 @@ const forgotPassword = catchAsync(async (req) => {
   await user.save();
 
   // 3- Send it to user's email
-  const resetURL = `http://localhost:4200/#/resetpassword/${resetToken}`;
+  const resetURL = `http://localhost:4200/resetpassword/${resetToken}`;
 
   const message = `<p>Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: <a href="${resetURL}">here</a> to reset your password.<br/><h5>\nIf you did not forget your password, please ignore this email!</h5></p>`;
 

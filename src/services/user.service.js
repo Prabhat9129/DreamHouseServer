@@ -42,7 +42,7 @@ const updateProfile = catchAsync(async (req) => {
   const image = await uploadFile(profileImage, folderName, 600);
   console.log(image);
   // 6- Update  user
-  const updatedata = await userModel.updateOne(
+  const updatedata = await userModel.findByIdAndUpdate(
     { _id: req.user._id },
     {
       name,
@@ -52,11 +52,12 @@ const updateProfile = catchAsync(async (req) => {
       address,
       city_id,
       pincode,
-    }
+    }, { new: true }
   );
   // updatedata.profileImg = image.public_id;
   // console.log(updatedata);
   // 7- If everything is OK, send data
+  updatedata.password = undefined;
   return {
     status: "Success",
     message: "data updated successfully!",
@@ -76,4 +77,23 @@ const getUser = catchAsync(async (req) => {
   };
 });
 
-module.exports = { updateProfile, getUser };
+const findAllUser=catchAsync(async(req)=>{
+if(req.user.role!=='admin'){
+  return {
+    status: "fail",
+    message: "Due to your role , you can't fetch the data",
+    statusCode: 401,
+  };
+}
+
+const userdata=await userModel.find();
+return{
+    status: "Success",
+    message: "data fetch successfully!",
+    statusCode: 200,
+    userdata,
+}
+
+})
+
+module.exports = { updateProfile, getUser , findAllUser};

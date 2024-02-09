@@ -1,4 +1,4 @@
-const { updateProfile,getUser } = require("../services/user.service");
+const { updateProfile,getUser,findAllUser } = require("../services/user.service");
 const catchAsync = require("../utils/asyncFunction");
 
 const updateProfiles = catchAsync(async (req, res) => {
@@ -22,4 +22,15 @@ const getUsers=catchAsync(async(req,res)=>{
     userdata,
   });
 })
-module.exports = { updateProfiles,getUsers };
+
+const findAll=catchAsync(async(req,res)=>{
+  const { status, statusCode, message, userdata } = await findAllUser(req);
+  res.status(statusCode).json({
+    status: status,
+    message: message,
+    statusCode: statusCode,
+    userdata,
+  });
+
+})
+module.exports = { updateProfiles,getUsers,findAll };

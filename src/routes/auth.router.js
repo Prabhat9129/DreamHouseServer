@@ -8,15 +8,17 @@ const {
   logout,
   forgotPassword,
   resetPassword,
+  allProperties
   
 } = require("../controller/auth.controller");
+const propertyController = require("../controller/properties.controller");
 
 router.post("/signup", createdUser);
 router.post("/signin", Signedin);
 router.get("/logout", logout);
 router.post("/forgotpassword", forgotPassword);
 router.patch("/resetpassword/:token", resetPassword);
-
+router.get("/allProperties",propertyController.allProperties);
 router.use(protect);
 router.patch("/PasswordUpadte", changedPassword);
 
