@@ -1,7 +1,6 @@
 //NPM pacakages
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
@@ -25,13 +24,6 @@ app.use(
     origin: "http://localhost:4200",
   })
 );
-// //limit request from same Api
-// const limiter = rateLimit({
-//   max: 1,
-//   windowMs: 1 * 1000,
-//   message: "Too many request from this IP, please try in an Hour",
-// });
-// app.use(limiter);
 
 //file upload
 app.use(
